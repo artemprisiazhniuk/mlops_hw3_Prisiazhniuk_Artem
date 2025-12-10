@@ -19,7 +19,7 @@ jobs:
           APP_VERSION: blue 
           MODEL_VERSION: v1.0.0
         run: |
-          docker build -t ghcr.io/${REPO_NAME}:${{ github.sha }} .
+          docker build -t ghcr.io/${{ github.repository_owner }}/${REPO_NAME}:${{ github.sha }} .
           echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           docker push ghcr.io/${REPO_NAME}:${{ github.sha }}
 
