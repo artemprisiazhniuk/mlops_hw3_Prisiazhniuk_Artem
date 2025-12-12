@@ -4,7 +4,7 @@ import os, subprocess
 
 app = FastAPI()
 
-APP_DIR = os.environ.get("APP_DIR", "/home/ubuntu/app")
+APP_DIR = os.environ.get("APP_DIR", "~/mlops_hw3_prisiazhniuk_artem")
 EXPECTED_TOKEN = os.environ.get("DEPLOY_TOKEN", "")
 
 class DeployReq(BaseModel):
@@ -22,11 +22,8 @@ def deploy(req: DeployReq, authorization: str = Header(default="")):
 
     image_tag = req.git_sha
 
-    sh(f"export IMAGE_TAG={image_tag} && docker compose -f docker-compose.blue.yml pull")
-    sh(f"export IMAGE_TAG={image_tag} && docker compose -f docker-compose.green.yml pull")
-
     sh(f"export IMAGE_TAG={image_tag} && docker compose -f docker-compose.blue.yml -f docker-compose.green.yml -f docker-compose.nginx.yml up -d")
-    sh("docker exec nginx nginx -t")
-    sh("docker exec nginx nginx -s reload")
+    sh("docker exec mlops_hw3_prisiazhniuk_artem-nginx-1 nginx -t")
+    sh("docker exec mlops_hw3_prisiazhniuk_artem-nginx-1 nginx -s reload")
 
     return {"status": "ok", "image_tag": image_tag}

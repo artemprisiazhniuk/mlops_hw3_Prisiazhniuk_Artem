@@ -4,7 +4,7 @@ services:
     ports:
       - "8086:80"
     volumes:
-      - ./nginx/nginx.blue.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/:/etc/nginx:ro
     depends_on:
       - ml-service-blue
       - ml-service-green
