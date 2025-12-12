@@ -44,30 +44,9 @@ jobs:
         run: |
           echo "Deploying image"
 
-          BLUE_IMAGE="$REGISTRY/$OWNER/$REPO_NAME-blue:$SHA"
-          GREEN_IMAGE="$REGISTRY/$OWNER/$REPO_NAME-green:$SHA"
-
           curl -fsS -X POST "${{ secrets.CLOUD_DEPLOY_URL }}" \
             -H "Authorization: Bearer ${{ secrets.CLOUD_TOKEN }}" \
             -H "Content-Type: application/json" \
             -d '{
-              "blue_image": "'"$BLUE_IMAGE"'",
-              "green_image": "'"$GREEN_IMAGE"'",
               "git_sha": "'"$SHA"'"
             }'
-
-      - name: Wait for health check
-        run: |
-          HEALTH_URL="${{ secrets.CLOUD_BASE_URL }}/health"
-
-          for i in $(seq 1 60); do
-            if curl -fsS "$HEALTH_URL" > /dev/null; then
-              echo "Service is running"
-              exit 0
-            fi
-            echo "Waiting for health... ($i/60)"
-            sleep 5
-          done
-
-          echo "Health check failed"
-          exit 1
